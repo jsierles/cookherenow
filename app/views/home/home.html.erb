@@ -1,0 +1,11 @@
+<div class="flex flex-col min-h-screen items-center pt-20 pb-20 bg-gray-400">
+<%=form_tag request.path, method: :get, class: "m-10" do %>
+<%= text_field_tag :q, params[:q] %>
+<%= submit_tag "Go" %>
+<% end %>
+<ul>
+<% @recipes.each do |recipe| %>
+<li><%= recipe.data["title"] %></li>
+<% end %>
+</ul>
+</div>

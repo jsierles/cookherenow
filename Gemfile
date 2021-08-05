@@ -60,3 +60,5 @@ gem "maxmind-geoip2", "~> 1.0"
 gem "tailwindcss-rails", "~> 0.3.3"
 
 gem "edamam-ruby", "~> 0.2.0"
+
+gem "pg", "~> 1.2"
