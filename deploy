@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -e
+
+fly deploy --remote-only --strategy immediate
