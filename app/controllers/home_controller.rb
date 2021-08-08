@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   def home
-    ip = $geoip.city(request.ip) rescue nil
+    ip = $geoip.city(request.headers['Fly-Client-Ip']) rescue nil
 
     @recipes = if params[:q]
       Recipe.where("lower(data->>'title') LIKE '%#{params[:q].downcase}%'")
