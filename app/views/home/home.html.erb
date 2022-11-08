@@ -13,7 +13,7 @@
 <% end %>
 <ul class="divide-y divide-y-gray-200">
 <% if @key.present? %>
-  <% cache(@key) do %>
+  <% cache(@key, expires_in: 10.seconds) do %>
     <% @recipes.each do |recipe| %>
     <li class="p-4"><%= recipe.data["title"] %></li>
     <% end %>
