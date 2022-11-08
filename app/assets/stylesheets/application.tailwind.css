@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+
+  input:checked + label {
+    @apply ring-2;
+  }
+
+  body {
+    @apply font-sans;
+  }
+
+  .button {
+    @apply inline-flex items-center justify-center
+           px-3 py-2 border border-transparent text-sm
+           leading-6 rounded-md shadow-sm text-white bg-yellow-800
+           hover:bg-yellow-700
+           disabled:hover:bg-yellow-600
+           focus:outline-none
+           focus:ring-2
+           disabled:focus:ring-0
+           focus:ring-offset-2
+           focus:ring-yellow-500;
+  }
+
+  .page-heading {
+    @apply text-lg md:text-3xl leading-7 text-gray-200 sm:text-3xl sm:truncate mb-8;
+  }
+
+  .res-button {
+    @apply uppercase py-2 px-4 flex-1 bg-blue-500 text-white text-sm text-center font-medium h-full w-full;
+  }
+
+  .loop-marker {
+    @apply border-0;
+  }
+
+  input[type=text], input[type=date], input[type=password], input[type=email], textarea {
+    @apply text-gray-800;
+  }
+
+  .centered-form {
+    @apply h-screen flex flex-col items-center justify-center mx-auto text-gray-200;
+  }
+
+  .grid-form {
+    @apply grid grid-cols-1 gap-6 mt-4 max-w-md object-center;
+  }
+
+  select {
+    @apply text-gray-800;
+  }
+
+  .sidebar-nav-button {
+    @apply block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700;
+  }
+
+  .field-group {
+    @apply grid grid-cols-1 gap-2;
+
+  }
+
+}
+
+.field_with_errors input {
+  @apply w-full bg-red-200;
+}
+
+.ensayo-table {
+  @apply mt-8;
+}
+
+.ensayo-table tr td:nth-child(2) {
+  @apply px-6;
+}
+
+.ensayo-table tr td:first-child {
+  @apply font-bold text-right py-4;
+}
+
+a {
+  @apply text-yellow-600;
+}

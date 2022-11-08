@@ -1,0 +1,9 @@
+#!/nix/store/f3fi0qs8rl5n3azkz50x66dzp68kcwvn-bash-5.1-p16/bin/bash
+
+if ! command -v foreman &> /dev/null
+then
+  echo "Installing foreman..."
+  gem install foreman
+fi
+
+foreman start -f Procfile.dev

@@ -7,3 +7,4 @@ public/assets
 public/packs
 .bundle
 .direnv
+pg_data

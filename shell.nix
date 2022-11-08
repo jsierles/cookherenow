@@ -26,8 +26,7 @@ in mkShell {
   # Put the PostgreSQL in a gitignored subdirectory.
   shellHook = ''
     export PGDATA="$PWD/pg_data"
-    export REDIS_URL=redis://localhost:6381
-    export DATABASE_URL=postgresql://localhost:5440
-    export PORT=5160
+    export DATABASE_URL=postgresql://localhost:5450
+    export PORT=5170
   '';
 }
