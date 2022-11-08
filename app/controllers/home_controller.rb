@@ -4,12 +4,12 @@ class HomeController < ApplicationController
     @key = nil
 
     @recipes = if params[:q]
+      @key = params[:q]
       Recipe.where("lower(data->>'title') LIKE '%#{params[:q].downcase}%'")
-      key = params[:q]
     elsif ip
       @appear = ip.city.name || ip.country.name
+      @key = ip
       Recipe.where("lower(data->>'title') LIKE '%#{ip.city.name.downcase}%' OR lower(data->>'title') LIKE '%#{ip.country.name.downcase}%'")
-      key = ip
     else
       Recipe.none
     end
