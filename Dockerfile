@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:experimental
 
-ARG RUBY_VERSION=3.0.0-jemalloc
+ARG RUBY_VERSION=3.1.2-jemalloc
 FROM quay.io/evl.ms/fullstaq-ruby:${RUBY_VERSION}-slim as build
 
 ARG RAILS_ENV=production
@@ -39,7 +39,7 @@ RUN --mount=type=cache,target=/cache,id=bundle bin/rsync-cache /cache vendor/bun
 
 COPY package.json yarn.lock ./
 
-RUN --mount=type=cache,target=/cache,id=node \
+RUN --mount=type=cache,target=/cache,id=node2 \
     bin/rsync-cache /cache node_modules "yarn"
 
 COPY . .
