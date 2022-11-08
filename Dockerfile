@@ -1,77 +1,116 @@
 # syntax = docker/dockerfile:experimental
 
-ARG RUBY_VERSION=3.1.2-jemalloc
-FROM quay.io/evl.ms/fullstaq-ruby:${RUBY_VERSION}-slim as build
+# Dockerfile used to build a deployable image for a Rails application.
+# Adjust as required.
+#
+# Common adjustments you may need to make over time:
+#  * Modify version numbers for Ruby, Bundler, and other products.
+#  * Add library packages needed at build time for your gems, node modules.
+#  * Add deployment packages needed by your application
+#  * Add (often fake) secrets needed to compile your assets
+
+#######################################################################
+
+# Learn more about the chosen Ruby stack, Fullstaq Ruby, here:
+#   https://github.com/evilmartians/fullstaq-ruby-docker.
+#
+# We recommend using the highest patch level for better security and
+# performance.
+
+ARG RUBY_VERSION=3.1.1
+ARG VARIANT=jemalloc-slim
+FROM quay.io/evl.ms/fullstaq-ruby:${RUBY_VERSION}-${VARIANT} as base
+
+LABEL fly_launch_runtime="rails"
+
+ARG BUNDLER_VERSION=2.3.23
 
 ARG RAILS_ENV=production
-ARG RAILS_MASTER_KEY
 ENV RAILS_ENV=${RAILS_ENV}
-ENV BUNDLE_PATH vendor/bundle
-ENV RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
-ENV SECRET_KEY_BASE 1
+
+ENV RAILS_SERVE_STATIC_FILES true
+ENV RAILS_LOG_TO_STDOUT true
+
+ARG BUNDLE_WITHOUT=development:test
+ARG BUNDLE_PATH=vendor/bundle
+ENV BUNDLE_PATH ${BUNDLE_PATH}
+ENV BUNDLE_WITHOUT ${BUNDLE_WITHOUT}
+
 RUN mkdir /app
 WORKDIR /app
+RUN mkdir -p tmp/pids
 
-# Reinstall runtime dependencies that need to be installed as packages
+RUN gem update --system --no-document && \
+    gem install -N bundler -v ${BUNDLER_VERSION}
 
-RUN --mount=type=cache,id=apt-cache,sharing=locked,target=/var/cache/apt \
-    --mount=type=cache,id=apt-lib,sharing=locked,target=/var/lib/apt \
+#######################################################################
+
+# install packages only needed at build time
+
+FROM base as build_deps
+
+ARG BUILD_PACKAGES="git build-essential libpq-dev wget vim curl gzip xz-utils libsqlite3-dev"
+ENV BUILD_PACKAGES ${BUILD_PACKAGES}
+
+RUN --mount=type=cache,id=dev-apt-cache,sharing=locked,target=/var/cache/apt \
+    --mount=type=cache,id=dev-apt-lib,sharing=locked,target=/var/lib/apt \
     apt-get update -qq && \
-    apt-get install --no-install-recommends -y \
-    postgresql-client file rsync git build-essential libpq-dev wget vim curl gzip xz-utils \
+    apt-get install --no-install-recommends -y ${BUILD_PACKAGES} \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-RUN curl -sO https://nodejs.org/dist/v16.0.0/node-v16.0.0-linux-x64.tar.xz && cd /usr/local && tar --strip-components 1 -xvf /app/node*xz && rm /app/node*xz && cd ~
+#######################################################################
 
-RUN gem install -N bundler -v 2.2.17
-RUN npm install -g yarn
+# install gems
 
-ENV PATH $PATH:/usr/local/bin
+FROM build_deps as gems
 
-COPY bin/rsync-cache bin/rsync-cache
-
-# Install rubygems
 COPY Gemfile* ./
+RUN bundle install &&  rm -rf vendor/bundle/ruby/*/cache
 
-ENV BUNDLE_WITHOUT development:test
+#######################################################################
 
-RUN --mount=type=cache,target=/cache,id=bundle bin/rsync-cache /cache vendor/bundle "bundle install"
+# install deployment packages
 
-COPY package.json yarn.lock ./
+FROM base
 
-RUN --mount=type=cache,target=/cache,id=node2 \
-    bin/rsync-cache /cache node_modules "yarn"
+ARG DEPLOY_PACKAGES="postgresql-client file vim curl gzip libsqlite3-0"
+ENV DEPLOY_PACKAGES=${DEPLOY_PACKAGES}
 
+RUN --mount=type=cache,id=prod-apt-cache,sharing=locked,target=/var/cache/apt \
+    --mount=type=cache,id=prod-apt-lib,sharing=locked,target=/var/lib/apt \
+    apt-get update -qq && \
+    apt-get install --no-install-recommends -y \
+    ${DEPLOY_PACKAGES} \
+    && rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# copy installed gems
+COPY --from=gems /app /app
+COPY --from=gems /usr/lib/fullstaq-ruby/versions /usr/lib/fullstaq-ruby/versions
+COPY --from=gems /usr/local/bundle /usr/local/bundle
+
+#######################################################################
+
+# Deploy your application
 COPY . .
 
-ENV NODE_ENV production
+# Adjust binstubs to run on Linux and set current working directory
+RUN chmod +x /app/bin/* && \
+    sed -i 's/ruby.exe/ruby/' /app/bin/* && \
+    sed -i '/^#!/aDir.chdir File.expand_path("..", __dir__)' /app/bin/*
 
-RUN --mount=type=cache,target=/cache,id=assets bin/rsync-cache /cache public/assets "bundle exec rails assets:precompile"
+# The following enable assets to precompile on the build server.  Adjust
+# as necessary.  If no combination works for you, see:
+# https://fly.io/docs/rails/getting-started/existing/#access-to-environment-variables-at-build-time
+ENV SECRET_KEY_BASE 1
+# ENV AWS_ACCESS_KEY_ID=1
+# ENV AWS_SECRET_ACCESS_KEY=1
 
-RUN rm -rf node_modules vendor/bundle/ruby/*/cache
+# Run build task defined in lib/tasks/fly.rake
+ARG BUILD_COMMAND="bin/rails fly:build"
+RUN ${BUILD_COMMAND}
 
-FROM quay.io/evl.ms/fullstaq-ruby:${RUBY_VERSION}-slim
-
-ARG RAILS_ENV=production
-
-RUN --mount=type=cache,id=apt-cache,sharing=locked,target=/var/cache/apt \
-    --mount=type=cache,id=apt-lib,sharing=locked,target=/var/lib/apt \
-    apt-get update -qq && \
-    apt-get install --no-install-recommends -y \
-    postgresql-client file git wget vim curl gzip  \
-    && rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-ENV RAILS_ENV=${RAILS_ENV}
-ENV RAILS_SERVE_STATIC_FILES true
-ENV BUNDLE_PATH vendor/bundle
-ENV BUNDLE_WITHOUT development:test
-ENV RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
-
-COPY --from=build /app /app
-
-WORKDIR /app
-
-RUN mkdir -p tmp/pids
-EXPOSE 8080
-
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+# Default server start instructions.  Generally Overridden by fly.toml.
+ENV PORT 8080
+ARG SERVER_COMMAND="bin/rails fly:server"
+ENV SERVER_COMMAND ${SERVER_COMMAND}
+CMD ${SERVER_COMMAND}

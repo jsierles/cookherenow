@@ -120,6 +120,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   actionpack (~> 7.0.2.3)

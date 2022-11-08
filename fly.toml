@@ -1,20 +1,20 @@
-# fly.toml file generated for cookherenow on 2021-08-05T19:58:36+02:00
+# fly.toml file generated for bold-shadow-2036 on 2022-11-08T19:52:29+01:00
 
 app = "cookherenow"
-
 kill_signal = "SIGINT"
 kill_timeout = 5
+processes = []
 
-[[mounts]]
-  destination = "/data"
-  source = "data"
+[build]
+  [build.args]
+    BUILD_COMMAND = "bin/rails fly:build"
+    SERVER_COMMAND = "bin/rails fly:server"
 
-#[deploy]
-#  release_command = "bundle exec rake db:migrate"
-
+[deploy]
+  release_command = "bin/rails fly:release"
 
 [env]
-  RAILS_LOG_TO_STDOUT = "true"
+  PORT = "8080"
 
 [experimental]
   allowed_public_ports = []
@@ -22,16 +22,17 @@ kill_timeout = 5
 
 [[services]]
   http_checks = []
-  internal_port = 3000
+  internal_port = 8080
+  processes = ["app"]
   protocol = "tcp"
   script_checks = []
-
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
     type = "connections"
 
   [[services.ports]]
+    force_https = true
     handlers = ["http"]
     port = 80
 
@@ -42,5 +43,9 @@ kill_timeout = 5
   [[services.tcp_checks]]
     grace_period = "1s"
     interval = "15s"
-    restart_limit = 6
+    restart_limit = 0
     timeout = "2s"
+
+[[statics]]
+  guest_path = "/app/public"
+  url_prefix = "/"
