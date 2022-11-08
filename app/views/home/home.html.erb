@@ -12,8 +12,12 @@
 <%= submit_tag "Go", class: "mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" %>
 <% end %>
 <ul class="divide-y divide-y-gray-200">
-<% @recipes.each do |recipe| %>
-<li class="p-4"><%= recipe.data["title"] %></li>
+<% if @key.present? %>
+  <% cache(@key) do %>
+    <% @recipes.each do |recipe| %>
+    <li class="p-4"><%= recipe.data["title"] %></li>
+    <% end %>
+  <% end %>
 <% end %>
 </ul>
 </div>
