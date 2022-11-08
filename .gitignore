@@ -41,3 +41,4 @@ yarn-debug.log*
 
 *.tar.gz
 *.json
+.direnv
