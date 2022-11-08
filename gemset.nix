@@ -168,6 +168,16 @@
     };
     version = "1.0.1";
   };
+  hiredis = {
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "04jj8k7lxqxw24sp0jiravigdkgsyrpprxpxm71ba93x1wr2w1bz";
+      type = "gem";
+    };
+    version = "0.6.3";
+  };
   http = {
     dependencies = ["addressable" "http-cookie" "http-form_data" "llhttp-ffi"];
     groups = ["default"];

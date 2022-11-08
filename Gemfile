@@ -19,7 +19,7 @@ gem 'propshaft'
 gem 'puma', '~> 5.0'
 gem 'pg'
 gem 'redis'
-
+gem 'hiredis'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 gem "edamam-ruby"

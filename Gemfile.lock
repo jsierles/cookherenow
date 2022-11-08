@@ -40,6 +40,7 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
+    hiredis (0.6.3)
     http (5.1.0)
       addressable (~> 2.8)
       http-cookie (~> 1.0)
@@ -74,6 +75,10 @@ GEM
     nio4r (2.5.8)
     nokogiri (1.13.3)
       mini_portile2 (~> 2.8.0)
+      racc (~> 1.4)
+    nokogiri (1.13.3-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.13.3-x86_64-linux)
       racc (~> 1.4)
     pg (1.4.4)
     propshaft (0.6.4)
@@ -110,6 +115,10 @@ GEM
       connection_pool
     tailwindcss-rails (2.0.16)
       railties (>= 6.0.0)
+    tailwindcss-rails (2.0.16-arm64-darwin)
+      railties (>= 6.0.0)
+    tailwindcss-rails (2.0.16-x86_64-linux)
+      railties (>= 6.0.0)
     thor (1.2.1)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
@@ -119,6 +128,7 @@ GEM
     zeitwerk (2.6.6)
 
 PLATFORMS
+  arm64-darwin-21
   ruby
   x86_64-linux
 
@@ -130,6 +140,7 @@ DEPENDENCIES
   activesupport (~> 7.0.2.3)
   bootsnap
   edamam-ruby
+  hiredis
   importmap-rails
   listen
   maxmind-geoip2
