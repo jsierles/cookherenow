@@ -6,3 +6,4 @@ node_modules
 public/assets
 public/packs
 .bundle
+.direnv
