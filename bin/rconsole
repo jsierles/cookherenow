@@ -1,0 +1,3 @@
+#!/bin/sh
+
+fly ssh console -C "/app/bin/fly-rails c"
