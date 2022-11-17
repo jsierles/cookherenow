@@ -9,3 +9,4 @@ public/packs
 .direnv
 pg_data
 .bundl3
+*.sql
