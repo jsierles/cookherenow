@@ -1,4 +1,15 @@
 {
+  actioncable = {
+    dependencies = ["actionpack" "activesupport" "nio4r" "websocket-driver"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0d65lx4cd4r8yqwb9nipi145zkcrkishndcmic42a5i900lcsy1c";
+      type = "gem";
+    };
+    version = "7.0.2.4";
+  };
   actionpack = {
     dependencies = ["actionview" "activesupport" "rack" "rack-test" "rails-dom-testing" "rails-html-sanitizer"];
     groups = ["default"];
@@ -485,26 +496,14 @@
     version = "0.10.1";
   };
   redis = {
-    dependencies = ["redis-client"];
     groups = ["default"];
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "1s2hvsq0nyxmh27cqv00zk0s6bb4dlxfhzng5x0w8qijpw0vx9h5";
+      sha256 = "0i4a8hxxcxci3n8hhlm9a8wa7a9m58r6sjvh4749v7362i8cy010";
       type = "gem";
     };
-    version = "5.0.5";
-  };
-  redis-client = {
-    dependencies = ["connection_pool"];
-    groups = ["default"];
-    platforms = [];
-    source = {
-      remotes = ["https://rubygems.org"];
-      sha256 = "1y2lk330f8sk63r7dqb8xw6ljc6hlvgc3j2c552bax62zxgms8r3";
-      type = "gem";
-    };
-    version = "0.11.1";
+    version = "4.8.0";
   };
   tailwindcss-rails = {
     dependencies = ["railties"];
@@ -558,6 +557,27 @@
       type = "gem";
     };
     version = "0.0.8.2";
+  };
+  websocket-driver = {
+    dependencies = ["websocket-extensions"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0a3bwxd9v3ghrxzjc4vxmf4xa18c6m4xqy5wb0yk5c6b9psc7052";
+      type = "gem";
+    };
+    version = "0.7.5";
+  };
+  websocket-extensions = {
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0hc2g9qps8lmhibl5baa91b4qx8wqw872rgwagml78ydj8qacsqw";
+      type = "gem";
+    };
+    version = "0.1.5";
   };
   zeitwerk = {
     groups = ["default"];

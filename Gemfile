@@ -8,6 +8,8 @@ gem "actionpack",    rails_version
 gem "actionview",    rails_version
 gem "activemodel",   rails_version
 gem "activerecord",  rails_version
+gem "actioncable",   rails_version
+
 gem "nokogiri", "1.13.3"
 gem "listen"
 
@@ -18,7 +20,7 @@ gem 'propshaft'
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
 gem 'pg'
-gem 'redis'
+gem 'redis', '~> 4.0'
 gem 'hiredis'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
