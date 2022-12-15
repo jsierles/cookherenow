@@ -3,18 +3,22 @@
   <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
 </svg>
 <% end %>
-<h1 class="text-3xl mt-6"><%= @recipe.data['title'] %></h1>
 
-<ul class="mt-8 mb-8">
-<% @recipe.data['ingredients'].each do |i| %>
-<li><%= i['text'] %></li>
+<% cache(@recipe) do %>
+  <h1 class="text-3xl mt-6"><%= @recipe.data['title'] %></h1>
+
+  <ul class="mt-8 mb-8">
+  <% @recipe.data['ingredients'].each do |i| %>
+  <li><%= i['text'] %></li>
+  <% end %>
+  <div>
+  </ul>
+
+  <% @recipe.data['instructions'].each do |i| %>
+  <p class="mb-3 text-lg"><%= i['text'] %><p>
+  <% end %>
+
 <% end %>
-<div>
-</ul>
-
-<% @recipe.data['instructions'].each do |i| %>
-<p class="mb-3 text-lg"><%= i['text'] %><p>
-<% end %>
-
 <div class="block w-64 -ml-20 mt-8">
 <%= render '/recipes/edamam' %>
+</div>
